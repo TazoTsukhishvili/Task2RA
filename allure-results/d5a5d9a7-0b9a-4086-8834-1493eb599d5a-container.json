@@ -1,0 +1,1 @@
+{"uuid":"d5a5d9a7-0b9a-4086-8834-1493eb599d5a","name":"check.openSwoop","children":["57bbc74b-2695-4120-a5ec-ec00b7fbcd92"],"description":"","befores":[{"name":"openSwoop","status":"passed","stage":"finished","description":"","steps":[],"attachments":[],"parameters":[],"start":1706533321453,"stop":1706533330524}],"afters":[],"start":1706533321453,"stop":1706533330525}
