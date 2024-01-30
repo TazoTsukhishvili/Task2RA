@@ -10,97 +10,68 @@ import static io.restassured.RestAssured.given;
 import static org.testng.Assert.*;
 
 public class Scenario2 {
-    String userLink = "https://bookstore.toolsqa.com";
-    String accept = "accept";
-    String contentType = "Content-Type";
-    String appJson = "application/json";
-
-    public static String randomString(int length) {
-        String characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-        StringBuilder sb = new StringBuilder(length);
-        Random random = new Random();
-        for (int i = 0; i < length; i++) {
-            int index = random.nextInt(characters.length());
-            sb.append(characters.charAt(index));
-        }
-        return sb.toString();
-    }
-
-    String userName = "userName" + randomString(4);
-
-    @Test
+    @Test (description =
+            "Add user\n" +
+            "Check that books list equals to null\n" +
+            "Check username value\n")
     public void createUser1() throws JSONException {
-        String user = "{\n" +
-                "  \"userName\": \"" + userName + "\",\n" +
-                "  \"password\": \"Test!23$%$%$\"\n" +
-                "}\n";
-        RestAssured.baseURI = userLink;
+        String user = Scenario2Data.getUser2Json(Scenario2Data.RandomUserName);
+
+        RestAssured.baseURI = TestConfigData.userLink;
         Response response = given()
-                .header(accept, appJson)
-                .header(contentType, appJson)
+                .header(TestConfigData.accept, TestConfigData.appJson)
+                .header(TestConfigData.contentType, TestConfigData.appJson)
                 .body(user)
                 .when()
                 .post("Account/v1/User")
                 .then()
                 .extract()
                 .response();
-        //   System.out.println(response.body().asString());
 
         String responseBody = response.getBody().asString();
         System.out.println(responseBody);
 
         JSONObject jsonResponse = new JSONObject(responseBody);
-        //assertEquals(jsonResponse.getString("code"), "1204");
-        //assertEquals(jsonResponse.getString("message"), "User exists!");
         assertEquals(jsonResponse.getString("books"), "[]");
-        assertEquals(jsonResponse.getString("username"), userName);
-
-
+        assertEquals(jsonResponse.getString("username"), Scenario2Data.RandomUserName);
     }
-
-    @Test
+    @Test (description = "Check that newly added user is not authorized")
     public void createUser2() throws JSONException {
-        String user = "{\n" +
-                "  \"userName\": \"" + userName + "\",\n" +
-                "  \"password\": \"Test!23$%$%$\"\n" +
-                "}\n";
-        RestAssured.baseURI = userLink;
+        String user = Scenario2Data.getUser2Json(Scenario2Data.RandomUserName);
+
+        RestAssured.baseURI = TestConfigData.userLink;
         Response response = given()
-                .header(accept, appJson)
-                .header(contentType, appJson)
+                .header(TestConfigData.accept, TestConfigData.appJson)
+                .header(TestConfigData.contentType, TestConfigData.appJson)
                 .body(user)
                 .when()
                 .post("Account/v1/Authorized")
                 .then()
                 .extract()
                 .response();
-        //   System.out.println(response.body().asString());
 
         String responseBody = response.getBody().asString();
         System.out.println(responseBody);
 
-
         assertTrue(responseBody.contains("false"), "Response body is not false");
-
     }
 
-    @Test
+    @Test (description =
+            "Generate token\n" +
+            "Validate status and result response values\n")
     public void createUser3() throws JSONException {
-        String user = "{\n" +
-                "  \"userName\": \"" + userName + "\",\n" +
-                "  \"password\": \"Test!23$%$%$\"\n" +
-                "}\n";
-        RestAssured.baseURI = userLink;
+        String user = Scenario2Data.getUser2Json(Scenario2Data.RandomUserName);
+
+        RestAssured.baseURI = TestConfigData.userLink;
         Response response = given()
-                .header(accept, appJson)
-                .header(contentType, appJson)
+                .header(TestConfigData.accept, TestConfigData.appJson)
+                .header(TestConfigData.contentType, TestConfigData.appJson)
                 .body(user)
                 .when()
                 .post("Account/v1/GenerateToken")
                 .then()
                 .extract()
                 .response();
-        //   System.out.println(response.body().asString());
 
         String responseBody = response.getBody().asString();
         System.out.println(responseBody);
@@ -109,43 +80,27 @@ public class Scenario2 {
 
         assertEquals(jsonResponse.getString("status"), "Success");
         assertEquals(jsonResponse.getString("result"), "User authorized successfully.");
-
-
-
     }
-
-
-   // createUser4 BUG
-
-    @Test
+    @Test (description = "Check that user became authorized")
     public void createUser4() throws JSONException {
-        String user = "{\n" +
-                "  \"userName\": \"" + userName + "\",\n" +
-                "  \"password\": \"Test!23$%$%$\"\n" +
-                "}\n";
-        RestAssured.baseURI = userLink;
+        String user = Scenario2Data.getUser2Json(Scenario2Data.RandomUserName);
+
+        RestAssured.baseURI = TestConfigData.userLink;
         Response response = given()
-                .header(accept, appJson)
-                .header(contentType, appJson)
+                .header(TestConfigData.accept, TestConfigData.appJson)
+                .header(TestConfigData.contentType, TestConfigData.appJson)
                 .body(user)
                 .when()
                 .post("Account/v1/Authorized")
                 .then()
                 .extract()
                 .response();
-        //   System.out.println(response.body().asString());
 
         String responseBody = response.getBody().asString();
         System.out.println(responseBody);
 
-    //    JSONObject jsonResponse = new JSONObject(responseBody);
-
         assertTrue(responseBody.contains("true"), "Response body is not true");
-
-
     }
-
-
 }
 
 
